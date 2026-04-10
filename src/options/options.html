@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Crunchyroll Audio Filter Settings</title>
+    <link rel="stylesheet" href="./options.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <header>
+        <p class="eyebrow">Crunchyroll Audio Filter</p>
+        <h1>Settings</h1>
+        <p class="lede">Pick the audio you want to see and keep the release calendar tidy without on-page controls.</p>
+      </header>
+
+      <section class="panel panel--hero">
+        <p class="section-kicker">At a glance</p>
+        <div id="optionsSummary" class="options-summary">Filtering Japanese only</div>
+        <p id="optionsSummaryText" class="lede lede--compact">Show only chosen audio is enabled, so non-matching entries are hidden when the extension can classify them.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Core behavior</h2>
+        <label class="row"><input id="enabled" type="checkbox" /> Enabled</label>
+        <label class="row"><input id="showOnlySelectedLanguages" type="checkbox" /> Show only chosen audio</label>
+        <label class="row"><input id="dimInsteadOfHide" type="checkbox" /> Dim non-matching entries instead of hiding</label>
+      </section>
+
+      <section class="panel">
+        <h2>Chosen audio</h2>
+        <p class="section-note">You can check multiple languages here, but the popup’s quick selector controls the primary one.</p>
+        <div id="audioLanguageList" class="checkbox-grid"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Optional subtitle preferences</h2>
+        <p class="section-note">Main filtering now focuses on audio, but subtitle preferences are still available for future heuristics.</p>
+        <div id="subtitleLanguageList" class="checkbox-grid"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Release calendar filters</h2>
+        <label class="row"><input id="premieresOnly" type="checkbox" /> Premieres only</label>
+        <label class="row"><input id="hideWatched" type="checkbox" /> Hide watched (heuristic)</label>
+        <label class="row"><input id="hideRecapsAndSpecials" type="checkbox" /> Hide recaps / specials</label>
+      </section>
+
+      <section class="panel">
+        <h2>Phase 2 scaffolding</h2>
+        <label class="row"><input id="inlineBadges" type="checkbox" /> Enable inline language badges</label>
+        <label class="row"><input id="watchlistTriage" type="checkbox" /> Enable watchlist triage scaffolding</label>
+        <label class="row"><input id="debug" type="checkbox" /> Debug logging</label>
+      </section>
+
+      <p id="status" class="status"></p>
+    </main>
+    <script type="module" src="./options.js"></script>
+  </body>
+</html>

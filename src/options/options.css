@@ -1,0 +1,103 @@
+:root {
+  color-scheme: dark;
+  --bg: #0f1115;
+  --panel: #171a20;
+  --text: #f5f7fb;
+  --muted: #aab1bb;
+  --accent: #f47521;
+  --border: rgba(255, 255, 255, 0.08);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.5 Inter, system-ui, sans-serif;
+}
+
+.page-shell {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 28px 20px 40px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--accent);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+}
+
+h1 {
+  margin: 6px 0 0;
+}
+
+.lede {
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.lede--compact {
+  margin-bottom: 0;
+}
+
+.section-kicker {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.options-summary {
+  margin-top: 6px;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.section-note {
+  color: var(--muted);
+  margin-top: -4px;
+  margin-bottom: 14px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  margin-top: 16px;
+}
+
+.panel--hero {
+  background: linear-gradient(180deg, rgba(244, 117, 33, 0.14), rgba(244, 117, 33, 0.05));
+}
+
+.panel h2 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.checkbox-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+input[type='checkbox'] {
+  accent-color: var(--accent);
+}
+
+.status {
+  color: #9ad4ac;
+  min-height: 20px;
+}

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Crunchyroll Audio Filter</title>
+    <link rel="stylesheet" href="./popup.css" />
+  </head>
+  <body>
+    <main class="popup-shell">
+      <header>
+        <p class="eyebrow">Crunchyroll Audio Filter</p>
+        <h1>Show only the audio you actually want.</h1>
+      </header>
+
+      <section class="panel panel--hero">
+        <div class="summary-label">Current mode</div>
+        <div id="modeSummary" class="mode-summary">Filtering Japanese only</div>
+        <p id="modeSubtext" class="mode-subtext">Only entries matching your chosen audio stay visible.</p>
+      </section>
+
+      <section class="panel">
+        <label class="row toggle-row">
+          <span>Enabled on Crunchyroll</span>
+          <input id="enabled" type="checkbox" />
+        </label>
+
+        <label class="stacked">
+          <span>Chosen audio</span>
+          <select id="primaryAudio"></select>
+        </label>
+
+        <label class="row">
+          <input id="showOnlySelectedLanguages" type="checkbox" />
+          <span>Show only chosen audio</span>
+        </label>
+
+        <label class="row">
+          <input id="dimInsteadOfHide" type="checkbox" />
+          <span>Dim non-matching entries instead of hiding</span>
+        </label>
+      </section>
+
+      <footer class="footer-actions">
+        <button id="openOptions" type="button">More settings</button>
+      </footer>
+    </main>
+    <script type="module" src="./popup.js"></script>
+  </body>
+</html>

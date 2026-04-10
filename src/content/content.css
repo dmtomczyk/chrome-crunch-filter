@@ -1,0 +1,126 @@
+.ccsc-hidden {
+  display: none !important;
+}
+
+.ccsc-dimmed {
+  opacity: 0.38 !important;
+  filter: saturate(0.7);
+}
+
+.ccsc-filter-bar,
+.ccsc-title-summary {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: rgba(20, 22, 26, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: #f7f7f7;
+  margin: 12px 0;
+  padding: 12px 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.ccsc-filter-bar {
+  position: sticky;
+  top: 10px;
+  z-index: 50;
+}
+
+.ccsc-filter-bar__topline,
+.ccsc-title-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ccsc-filter-bar__controls {
+  display: flex;
+  gap: 10px 14px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.ccsc-empty-note {
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+}
+
+.ccsc-filter-bar label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.ccsc-filter-bar input[type='checkbox'] {
+  accent-color: #f47521;
+}
+
+.ccsc-counter,
+.ccsc-preferred-tag,
+.ccsc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.ccsc-counter {
+  background: rgba(255, 255, 255, 0.08);
+  margin-left: 8px;
+}
+
+.ccsc-badge-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.ccsc-badge {
+  background: rgba(244, 117, 33, 0.14);
+  border: 1px solid rgba(244, 117, 33, 0.28);
+  color: #ffd3b5;
+}
+
+.ccsc-preferred-tag {
+  background: rgba(73, 185, 116, 0.14);
+  border: 1px solid rgba(73, 185, 116, 0.28);
+  color: #b8f0cb;
+}
+
+.ccsc-link-button,
+.ccsc-next-button {
+  border: 0;
+  border-radius: 999px;
+  background: #f47521;
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  padding: 8px 12px;
+}
+
+.ccsc-link-button {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ccsc-link-button:hover,
+.ccsc-next-button:hover {
+  filter: brightness(1.08);
+}
+
+.ccsc-variant-option {
+  position: relative;
+}
+
+.ccsc-variant-option--preferred {
+  outline: 2px solid rgba(73, 185, 116, 0.6);
+  outline-offset: 2px;
+  border-radius: 8px;
+}

@@ -1,0 +1,16 @@
+{
+  "name": "crunchyroll-audio-filter",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Chrome extension for showing only your chosen audio on Crunchyroll.",
+  "type": "module",
+  "scripts": {
+    "build": "node ./scripts/build.mjs",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.1.40",
+    "esbuild": "^0.25.3",
+    "typescript": "^5.8.3"
+  }
+}

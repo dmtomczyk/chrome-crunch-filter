@@ -1,0 +1,116 @@
+:root {
+  color-scheme: dark;
+  --bg: #111317;
+  --panel: #181c22;
+  --muted: #aab1bb;
+  --accent: #f47521;
+  --border: rgba(255, 255, 255, 0.08);
+}
+
+body {
+  margin: 0;
+  min-width: 340px;
+  background: var(--bg);
+  color: white;
+  font: 14px/1.45 Inter, system-ui, sans-serif;
+}
+
+.popup-shell {
+  padding: 16px;
+}
+
+h1 {
+  font-size: 18px;
+  margin: 4px 0 0;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--accent);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 11px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 14px;
+}
+
+.panel--hero {
+  background: linear-gradient(180deg, rgba(244, 117, 33, 0.14), rgba(244, 117, 33, 0.05));
+}
+
+.summary-label {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.mode-summary {
+  margin-top: 6px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.mode-subtext {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.row,
+.stacked {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.row:first-child,
+.stacked:first-child {
+  margin-top: 0;
+}
+
+.row {
+  align-items: center;
+}
+
+.toggle-row {
+  justify-content: space-between;
+}
+
+.stacked {
+  flex-direction: column;
+}
+
+select,
+button {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #0d1014;
+  color: white;
+  padding: 10px 12px;
+  font: inherit;
+}
+
+input[type='checkbox'] {
+  accent-color: var(--accent);
+}
+
+.footer-actions {
+  margin-top: 12px;
+}
+
+button {
+  cursor: pointer;
+}
+
+.footer-actions button {
+  background: rgba(255, 255, 255, 0.06);
+}
