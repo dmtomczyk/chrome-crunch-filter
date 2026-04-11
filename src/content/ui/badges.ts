@@ -1,4 +1,5 @@
 import type { EntryRecord, UserSettings } from '../../shared/types';
+import { UI_ROOT_ATTR } from '../../shared/constants';
 import { labelForLanguage } from '../filters/language-normalizer';
 
 function ensureBadgeRow(record: EntryRecord): HTMLElement | null {
@@ -11,6 +12,7 @@ function ensureBadgeRow(record: EntryRecord): HTMLElement | null {
   if (!row) {
     row = document.createElement('div');
     row.className = 'ccsc-badge-row';
+    row.setAttribute(UI_ROOT_ATTR, 'true');
     anchor.insertAdjacentElement('afterend', row);
   }
 
@@ -48,6 +50,7 @@ export function renderBadges(record: EntryRecord, settings: UserSettings): void 
   if (record.entry.isPreferredMatch) {
     const preferredTag = document.createElement('span');
     preferredTag.className = 'ccsc-preferred-tag';
+    preferredTag.setAttribute(UI_ROOT_ATTR, 'true');
     preferredTag.textContent = 'Preferred';
     row.appendChild(preferredTag);
   }

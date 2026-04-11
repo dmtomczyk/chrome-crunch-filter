@@ -8,9 +8,11 @@ import {
   normalizeCrunchyrollLocaleHint,
   normalizeTitle
 } from '../filters/language-normalizer';
+import { normalizeSeriesUrl } from '../../shared/followed-series';
 import { findTitleHeading } from './selectors';
 
 const EPISODE_PATTERN = /\b(E\d{1,4}|Episode\s+\d{1,4})\b/i;
+const EPISODE_NUMBER_PATTERN = /\b(?:E|Episode\s+)(\d{1,4})\b/i;
 const SEASON_PATTERN = /\b(Season\s+\d+[^\n|]*)\b/i;
 const DATE_PATTERN = /\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/;
 const TIME_PATTERN = /^\d{1,2}:\d{2}\s*(am|pm)$/i;
@@ -139,6 +141,33 @@ function detectRecap(text: string): boolean | null {
   return null;
 }
 
+function extractSeriesUrl(root: HTMLElement, pageType: PageType): string | undefined {
+  if (pageType === 'title-page') {
+    return normalizeSeriesUrl(location.href);
+  }
+
+  const anchor = root.querySelector<HTMLAnchorElement>('a[href*="/series/"]');
+  return normalizeSeriesUrl(anchor?.href);
+}
+
+function extractSeriesId(seriesUrl: string | undefined): string | undefined {
+  if (!seriesUrl) {
+    return undefined;
+  }
+
+  try {
+    const url = new URL(seriesUrl, location.origin);
+    const parts = url.pathname.split('/').filter(Boolean);
+    if (parts[0] === 'series') {
+      return parts[1];
+    }
+  } catch {
+    // ignore
+  }
+
+  return undefined;
+}
+
 function buildStableEntryId(root: HTMLElement, pageType: PageType, normalizedTitle: string, linkHref: string, seasonLabel?: string, episodeLabel?: string): string {
   const popoverUrl = root.getAttribute('data-popover-url') ?? '';
   const groupId = root.getAttribute('data-group-id') ?? '';
@@ -147,6 +176,54 @@ function buildStableEntryId(root: HTMLElement, pageType: PageType, normalizedTit
   const uniqueVariantHint = popoverUrl || citeName || root.getAttribute('data-slug') || root.innerText.slice(0, 120);
 
   return `${pageType}-${slugify(normalizedTitle)}-${slugify(linkHref)}-${slugify(episodeLabel ?? seasonLabel ?? '')}-${slugify(groupId)}-${slugify(episodeNum)}-${slugify(uniqueVariantHint)}`;
+}
+
+function buildEpisodeKey(input: {
+  seriesId?: string;
+  normalizedTitle?: string;
+  url: string;
+  episodeNumber?: number | null;
+}): string | undefined {
+  if (input.seriesId && input.episodeNumber != null) {
+    return `${input.seriesId}::episode-${input.episodeNumber}`;
+  }
+
+  if (input.normalizedTitle && input.episodeNumber != null) {
+    return `${slugify(input.normalizedTitle)}::episode-${input.episodeNumber}`;
+  }
+
+  if (/\/watch\//.test(input.url)) {
+    try {
+      const url = new URL(input.url, location.origin);
+      return `${url.origin}${url.pathname}`;
+    } catch {
+      return input.url;
+    }
+  }
+
+  return undefined;
+}
+
+function buildReleaseKey(input: {
+  pageType: PageType;
+  seriesId?: string;
+  normalizedTitle: string;
+  episodeNumber?: number | null;
+  episodeLabel?: string;
+  audioKey?: string | null;
+  url: string;
+  groupId?: string;
+  episodeNumAttr?: string;
+}): string | undefined {
+  if (input.pageType !== 'release-calendar') {
+    return undefined;
+  }
+
+  const titleKey = slugify(input.seriesId ?? input.normalizedTitle);
+  const episodeKey = input.groupId || input.episodeNumAttr || String(input.episodeNumber ?? '') || slugify(input.episodeLabel ?? input.url);
+  const audioKey = slugify(input.audioKey ?? 'unknown');
+
+  return `${titleKey}::${slugify(episodeKey)}::${audioKey}`;
 }
 
 export function buildEntryRecord(root: HTMLElement, pageType: PageType, settings: UserSettings): EntryRecord | null {
@@ -160,8 +237,13 @@ export function buildEntryRecord(root: HTMLElement, pageType: PageType, settings
 
   const seasonLabel = textBlob.match(SEASON_PATTERN)?.[1];
   const episodeLabel = textBlob.match(EPISODE_PATTERN)?.[1];
+  const episodeNumber = Number(textBlob.match(EPISODE_NUMBER_PATTERN)?.[1] ?? '') || null;
   const normalizedTitle = normalizeTitle(rawTitle);
+  const seriesUrl = extractSeriesUrl(root, pageType);
+  const seriesId = extractSeriesId(seriesUrl);
   const citeName = textOf(root.querySelector('cite[itemprop="name"], [itemprop="name"]'));
+  const groupId = root.getAttribute('data-group-id') ?? '';
+  const episodeNumAttr = root.getAttribute('data-episode-num') ?? '';
   const localeHint = normalizeCrunchyrollLocaleHint(root.getAttribute('data-popover-url'));
   let detection = detectLanguages(`${rawTitle} ${citeName} ${textBlob}`);
 
@@ -175,8 +257,28 @@ export function buildEntryRecord(root: HTMLElement, pageType: PageType, settings
     normalizedTitle,
     seasonLabel,
     episodeLabel,
+    episodeNumber,
+    episodeKey: buildEpisodeKey({
+      seriesId,
+      normalizedTitle,
+      url: link.href,
+      episodeNumber
+    }),
+    releaseKey: buildReleaseKey({
+      pageType,
+      seriesId,
+      normalizedTitle,
+      episodeNumber,
+      episodeLabel,
+      audioKey: localeHint ?? detection.audioLanguages[0] ?? null,
+      url: link.href,
+      groupId,
+      episodeNumAttr
+    }),
     pageType,
     url: link.href,
+    seriesUrl,
+    seriesId,
     detectedAudioLanguages: detection.audioLanguages,
     detectedSubtitleLanguages: detection.subtitleLanguages,
     detectedVariantType: detection.variantType,

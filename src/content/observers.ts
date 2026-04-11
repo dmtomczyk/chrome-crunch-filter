@@ -7,6 +7,18 @@ function debounce<T extends (...args: never[]) => void>(fn: T, delayMs: number):
   }) as T;
 }
 
+function isOpenClawInjectedNode(node: HTMLElement): boolean {
+  if (node.hasAttribute('data-ccsc-root')) {
+    return true;
+  }
+
+  if (node.closest?.('[data-ccsc-root="true"]')) {
+    return true;
+  }
+
+  return /\bccsc-/.test(node.className);
+}
+
 export function installObservers(onRefresh: () => void): void {
   const debouncedRefresh = debounce(onRefresh, 200);
 
@@ -17,7 +29,7 @@ export function installObservers(onRefresh: () => void): void {
           return false;
         }
 
-        return !node.hasAttribute('data-ccsc-root') && !node.closest?.('[data-ccsc-root="true"]');
+        return !isOpenClawInjectedNode(node);
       });
     });
 

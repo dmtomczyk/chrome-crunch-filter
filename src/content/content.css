@@ -96,7 +96,8 @@
 }
 
 .ccsc-link-button,
-.ccsc-next-button {
+.ccsc-next-button,
+.ccsc-follow-button {
   border: 0;
   border-radius: 999px;
   background: #f47521;
@@ -110,8 +111,13 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
+.ccsc-follow-button--active {
+  background: rgba(73, 185, 116, 0.9);
+}
+
 .ccsc-link-button:hover,
-.ccsc-next-button:hover {
+.ccsc-next-button:hover,
+.ccsc-follow-button:hover {
   filter: brightness(1.08);
 }
 
@@ -123,4 +129,232 @@
   outline: 2px solid rgba(73, 185, 116, 0.6);
   outline-offset: 2px;
   border-radius: 8px;
+}
+
+.ccsc-title-summary {
+  background: linear-gradient(180deg, rgba(20, 22, 26, 0.98), rgba(20, 22, 26, 0.92));
+  width: min(760px, calc(100vw - 48px));
+  max-width: 100%;
+  padding: 12px 13px;
+  margin-top: 14px;
+}
+
+.ccsc-title-summary__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.ccsc-title-summary__eyebrow {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ccsc-title-summary__title {
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.ccsc-title-summary__chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ccsc-title-summary__grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  flex: 1 1 320px;
+  width: 100%;
+}
+
+.ccsc-title-summary__stat {
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+
+.ccsc-title-summary__label {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 12px;
+}
+
+.ccsc-title-summary__value {
+  margin-top: 4px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.ccsc-title-summary__actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .ccsc-title-summary {
+    width: min(100%, calc(100vw - 32px));
+  }
+
+  .ccsc-title-summary__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ccsc-follow-chip-group {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 5px;
+}
+
+.ccsc-episode-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  position: relative;
+  z-index: 6;
+  pointer-events: auto;
+}
+
+.ccsc-episode-toggle-label {
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ccsc-episode-seen-toggle {
+  border: 0;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  width: fit-content;
+  position: relative;
+  z-index: 7;
+  pointer-events: auto;
+}
+
+.ccsc-episode-seen-toggle--seen {
+  background: rgba(126, 134, 150, 0.92);
+  color: #f7fbff;
+}
+
+.ccsc-episode-seen-toggle--unseen {
+  background: rgba(42, 48, 58, 0.98);
+  color: #f7fbff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.ccsc-follow-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  border-radius: 999px;
+  padding: 2px 7px;
+  font-size: 10px;
+  line-height: 1.15;
+  width: fit-content;
+  white-space: nowrap;
+}
+
+.ccsc-follow-badge--following {
+  background: linear-gradient(180deg, rgba(62, 115, 232, 0.95), rgba(41, 86, 189, 0.95));
+  border: 1px solid rgba(169, 197, 255, 0.28);
+  color: #f7fbff;
+  font-weight: 700;
+}
+
+.ccsc-follow-badge--new {
+  background: linear-gradient(180deg, rgba(59, 163, 103, 0.96), rgba(39, 125, 77, 0.96));
+  border: 1px solid rgba(198, 244, 212, 0.25);
+  color: #f7fff9;
+  font-weight: 700;
+}
+
+.ccsc-follow-badge--seen {
+  background: linear-gradient(180deg, rgba(126, 134, 150, 0.94), rgba(94, 103, 119, 0.94));
+  border: 1px solid rgba(237, 242, 248, 0.18);
+  color: #f5f8fc;
+  font-weight: 700;
+}
+
+.ccsc-follow-badge--neutral {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f0f3f8;
+}
+
+.ccsc-follow-badge--audio {
+  background: rgba(244, 117, 33, 0.18);
+  border: 1px solid rgba(244, 117, 33, 0.32);
+  color: #fff0e4;
+}
+
+.ccsc-followed {
+  box-shadow: none;
+}
+
+.ccsc-followed-new {
+  box-shadow: none;
+}
+
+.ccsc-followed-seen {
+  box-shadow: none;
+}
+
+.ccsc-watch-widget {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: rgba(20, 22, 26, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: #f7f7f7;
+  margin: 14px 0;
+  padding: 12px 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  width: min(560px, calc(100vw - 48px));
+  max-width: 100%;
+}
+
+.ccsc-watch-widget__label {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ccsc-watch-widget__title {
+  margin-top: 5px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.ccsc-watch-widget__meta {
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 13px;
+}
+
+.ccsc-watch-widget__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
 }

@@ -93,6 +93,57 @@ h1 {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
+.followed-list {
+  display: grid;
+  gap: 10px;
+}
+
+.followed-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.followed-card__topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.followed-card__title {
+  font-weight: 700;
+}
+
+.followed-card__meta {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.followed-card__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.followed-card__actions a,
+.followed-card__actions button {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #101319;
+  color: var(--text);
+  padding: 9px 12px;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.followed-empty {
+  color: var(--muted);
+}
+
 input[type='checkbox'] {
   accent-color: var(--accent);
 }

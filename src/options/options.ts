@@ -1,11 +1,13 @@
 import { LANGUAGE_OPTIONS } from '../shared/constants';
 import { getSettings, updateSettings } from '../shared/storage';
-import type { UserSettings } from '../shared/types';
+import type { FollowedSeries, UserSettings } from '../shared/types';
 import { labelForLanguage } from '../content/filters/language-normalizer';
+import { listFollowedSeries, removeFollowedSeries } from '../shared/followed-series';
 
 const status = document.getElementById('status') as HTMLParagraphElement;
 const audioLanguageList = document.getElementById('audioLanguageList') as HTMLDivElement;
 const subtitleLanguageList = document.getElementById('subtitleLanguageList') as HTMLDivElement;
+const followedShowsList = document.getElementById('followedShowsList') as HTMLDivElement;
 const optionsSummary = document.getElementById('optionsSummary') as HTMLDivElement;
 const optionsSummaryText = document.getElementById('optionsSummaryText') as HTMLParagraphElement;
 
@@ -13,6 +15,7 @@ const coreInputs = {
   enabled: document.getElementById('enabled') as HTMLInputElement,
   showOnlySelectedLanguages: document.getElementById('showOnlySelectedLanguages') as HTMLInputElement,
   dimInsteadOfHide: document.getElementById('dimInsteadOfHide') as HTMLInputElement,
+  followedOnly: document.getElementById('followedOnly') as HTMLInputElement,
   premieresOnly: document.getElementById('premieresOnly') as HTMLInputElement,
   hideWatched: document.getElementById('hideWatched') as HTMLInputElement,
   hideRecapsAndSpecials: document.getElementById('hideRecapsAndSpecials') as HTMLInputElement,
@@ -21,12 +24,12 @@ const coreInputs = {
   debug: document.getElementById('debug') as HTMLInputElement
 };
 
-function flashSaved(): void {
-  status.textContent = 'Saved.';
+function flashSaved(message = 'Saved.'): void {
+  status.textContent = message;
   window.clearTimeout((flashSaved as typeof flashSaved & { timeout?: number }).timeout);
   (flashSaved as typeof flashSaved & { timeout?: number }).timeout = window.setTimeout(() => {
     status.textContent = '';
-  }, 1200);
+  }, 1400);
 }
 
 function renderLanguageCheckboxes(container: HTMLElement, name: string, selected: string[]): void {
@@ -40,7 +43,7 @@ function renderLanguageCheckboxes(container: HTMLElement, name: string, selected
   ).join('');
 }
 
-function renderOptionsSummary(settings: UserSettings): void {
+function renderOptionsSummary(settings: UserSettings, followedShows: FollowedSeries[]): void {
   const firstAudio = settings.preferredAudioLanguages[0] ?? 'ja-JP';
   const audioLabel = labelForLanguage(firstAudio);
 
@@ -53,27 +56,69 @@ function renderOptionsSummary(settings: UserSettings): void {
   if (settings.showOnlySelectedLanguages) {
     optionsSummary.textContent = `Filtering ${audioLabel} only`;
     optionsSummaryText.textContent = settings.dimInsteadOfHide
-      ? 'Non-matching entries stay visible but dimmed.'
-      : 'Non-matching entries are hidden when the extension can classify them.';
+      ? `Non-matching entries stay visible but dimmed. ${followedShows.length} followed show${followedShows.length === 1 ? '' : 's'} saved.`
+      : `Non-matching entries are hidden when the extension can classify them. ${followedShows.length} followed show${followedShows.length === 1 ? '' : 's'} saved.`;
     return;
   }
 
   optionsSummary.textContent = `Preferred audio: ${audioLabel}`;
-  optionsSummaryText.textContent = 'The extension is in a lighter-touch mode and will not force a strict audio-only view.';
+  optionsSummaryText.textContent = `${followedShows.length} followed show${followedShows.length === 1 ? '' : 's'} saved. The extension is in a lighter-touch mode and will not force a strict audio-only view.`;
+}
+
+function renderFollowedShows(followedShows: FollowedSeries[]): void {
+  if (followedShows.length === 0) {
+    followedShowsList.innerHTML = '<div class="followed-empty">No followed shows yet. Open a series page on Crunchyroll and click Follow show.</div>';
+    return;
+  }
+
+  followedShowsList.innerHTML = followedShows
+    .map(
+      (show) => `
+        <article class="followed-card" data-series-id="${show.seriesId}">
+          <div class="followed-card__topline">
+            <div class="followed-card__title">${show.title}</div>
+            <div class="ccsc-badge">${labelForLanguage(show.preferredAudio)}</div>
+          </div>
+          <div class="followed-card__meta">
+            Followed ${new Date(show.followedAt).toLocaleDateString()} • Seen through episode ${show.newestEpisodeSeen ?? 'unknown'}
+          </div>
+          <div class="followed-card__actions">
+            <a href="${show.seriesUrl}" target="_blank" rel="noreferrer">Open series</a>
+            <button type="button" data-action="remove-follow">Remove</button>
+          </div>
+        </article>
+      `
+    )
+    .join('');
+
+  followedShowsList.querySelectorAll<HTMLButtonElement>('[data-action="remove-follow"]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const seriesId = button.closest<HTMLElement>('[data-series-id]')?.dataset.seriesId;
+      if (!seriesId) {
+        return;
+      }
+
+      await removeFollowedSeries(seriesId);
+      await syncForm();
+      flashSaved('Removed followed show.');
+    });
+  });
 }
 
 async function savePatch(patch: Partial<UserSettings>): Promise<void> {
   const settings = await updateSettings(patch);
-  renderOptionsSummary(settings);
+  const followedShows = await listFollowedSeries();
+  renderOptionsSummary(settings, followedShows);
   flashSaved();
 }
 
 async function syncForm(): Promise<void> {
-  const settings = await getSettings();
+  const [settings, followedShows] = await Promise.all([getSettings(), listFollowedSeries()]);
 
   coreInputs.enabled.checked = settings.enabled;
   coreInputs.showOnlySelectedLanguages.checked = settings.showOnlySelectedLanguages;
   coreInputs.dimInsteadOfHide.checked = settings.dimInsteadOfHide;
+  coreInputs.followedOnly.checked = settings.releaseCalendarFilters.followedOnly;
   coreInputs.premieresOnly.checked = settings.releaseCalendarFilters.premieresOnly;
   coreInputs.hideWatched.checked = settings.releaseCalendarFilters.hideWatched;
   coreInputs.hideRecapsAndSpecials.checked = settings.releaseCalendarFilters.hideRecapsAndSpecials;
@@ -81,9 +126,10 @@ async function syncForm(): Promise<void> {
   coreInputs.watchlistTriage.checked = settings.featureFlags.watchlistTriage;
   coreInputs.debug.checked = settings.featureFlags.debug;
 
-  renderOptionsSummary(settings);
+  renderOptionsSummary(settings, followedShows);
   renderLanguageCheckboxes(audioLanguageList, 'audio', settings.preferredAudioLanguages);
   renderLanguageCheckboxes(subtitleLanguageList, 'subtitle', settings.preferredSubtitleLanguages);
+  renderFollowedShows(followedShows);
 
   audioLanguageList.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((input) => {
     input.addEventListener('change', async () => {
@@ -107,9 +153,20 @@ coreInputs.showOnlySelectedLanguages.addEventListener('change', () =>
 coreInputs.dimInsteadOfHide.addEventListener('change', () =>
   void savePatch({ dimInsteadOfHide: coreInputs.dimInsteadOfHide.checked })
 );
+coreInputs.followedOnly.addEventListener('change', () =>
+  void savePatch({
+    releaseCalendarFilters: {
+      followedOnly: coreInputs.followedOnly.checked,
+      premieresOnly: coreInputs.premieresOnly.checked,
+      hideWatched: coreInputs.hideWatched.checked,
+      hideRecapsAndSpecials: coreInputs.hideRecapsAndSpecials.checked
+    }
+  })
+);
 coreInputs.premieresOnly.addEventListener('change', () =>
   void savePatch({
     releaseCalendarFilters: {
+      followedOnly: coreInputs.followedOnly.checked,
       premieresOnly: coreInputs.premieresOnly.checked,
       hideWatched: coreInputs.hideWatched.checked,
       hideRecapsAndSpecials: coreInputs.hideRecapsAndSpecials.checked
@@ -119,6 +176,7 @@ coreInputs.premieresOnly.addEventListener('change', () =>
 coreInputs.hideWatched.addEventListener('change', () =>
   void savePatch({
     releaseCalendarFilters: {
+      followedOnly: coreInputs.followedOnly.checked,
       premieresOnly: coreInputs.premieresOnly.checked,
       hideWatched: coreInputs.hideWatched.checked,
       hideRecapsAndSpecials: coreInputs.hideRecapsAndSpecials.checked
@@ -128,6 +186,7 @@ coreInputs.hideWatched.addEventListener('change', () =>
 coreInputs.hideRecapsAndSpecials.addEventListener('change', () =>
   void savePatch({
     releaseCalendarFilters: {
+      followedOnly: coreInputs.followedOnly.checked,
       premieresOnly: coreInputs.premieresOnly.checked,
       hideWatched: coreInputs.hideWatched.checked,
       hideRecapsAndSpecials: coreInputs.hideRecapsAndSpecials.checked

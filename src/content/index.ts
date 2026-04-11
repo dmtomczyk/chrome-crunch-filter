@@ -23,7 +23,7 @@ async function refreshPage(): Promise<void> {
     clearInjectedUi();
     clearEntryPresentation();
 
-    const result = applyCurrentPage(currentSettings, (patch) => {
+    const result = await applyCurrentPage(currentSettings, (patch) => {
       void handleSettingsPatch(patch);
     });
 
@@ -48,12 +48,14 @@ void (async () => {
   });
 
   chrome.storage.onChanged.addListener((changes, areaName) => {
-    if (areaName !== 'local' || !changes[STORAGE_KEY]) {
+    if (areaName !== 'local') {
       return;
     }
 
     void (async () => {
-      currentSettings = await getSettings();
+      if (changes[STORAGE_KEY]) {
+        currentSettings = await getSettings();
+      }
       await refreshPage();
     })();
   });

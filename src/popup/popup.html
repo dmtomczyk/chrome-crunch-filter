@@ -39,6 +39,21 @@
           <input id="dimInsteadOfHide" type="checkbox" />
           <span>Dim non-matching entries instead of hiding</span>
         </label>
+
+        <label class="row">
+          <input id="followedOnly" type="checkbox" />
+          <span>Calendar: followed shows only</span>
+        </label>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <div class="summary-label">Followed shows</div>
+            <div id="followedCount" class="panel-title">No followed shows yet</div>
+          </div>
+        </div>
+        <div id="followedList" class="followed-popup-list"></div>
       </section>
 
       <footer class="footer-actions">

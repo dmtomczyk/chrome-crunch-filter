@@ -33,6 +33,7 @@ export const DEFAULT_SETTINGS: UserSettings = {
   preferredSubtitleLanguages: ['en-US'],
   dimInsteadOfHide: false,
   releaseCalendarFilters: {
+    followedOnly: false,
     premieresOnly: false,
     hideWatched: false,
     hideRecapsAndSpecials: true

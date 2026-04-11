@@ -11,6 +11,10 @@ export function detectPageType(url: URL = new URL(location.href)): PageType {
     return 'title-page';
   }
 
+  if (path.startsWith('/watch/')) {
+    return 'watch-page';
+  }
+
   if (path.includes('/watchlist') || path.includes('/queue') || path.includes('/my-lists')) {
     return 'watchlist';
   }

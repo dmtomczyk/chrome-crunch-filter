@@ -41,9 +41,16 @@
 
       <section class="panel">
         <h2>Release calendar filters</h2>
+        <label class="row"><input id="followedOnly" type="checkbox" /> Followed shows only</label>
         <label class="row"><input id="premieresOnly" type="checkbox" /> Premieres only</label>
         <label class="row"><input id="hideWatched" type="checkbox" /> Hide watched (heuristic)</label>
         <label class="row"><input id="hideRecapsAndSpecials" type="checkbox" /> Hide recaps / specials</label>
+      </section>
+
+      <section class="panel">
+        <h2>Followed shows</h2>
+        <p class="section-note">Follow a series from its title page. New matching releases will be easier to spot on the calendar.</p>
+        <div id="followedShowsList" class="followed-list"></div>
       </section>
 
       <section class="panel">

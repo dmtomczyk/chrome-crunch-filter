@@ -2,12 +2,14 @@ export type PageType =
   | 'release-calendar'
   | 'browse'
   | 'title-page'
+  | 'watch-page'
   | 'watchlist'
   | 'unsupported';
 
 export type VariantType = 'sub' | 'dub' | 'mixed' | 'unknown';
 
 export interface ReleaseCalendarFilters {
+  followedOnly: boolean;
   premieresOnly: boolean;
   hideWatched: boolean;
   hideRecapsAndSpecials: boolean;
@@ -42,8 +44,13 @@ export interface ContentEntry {
   normalizedTitle: string;
   seasonLabel?: string;
   episodeLabel?: string;
+  episodeNumber?: number | null;
+  episodeKey?: string;
+  releaseKey?: string;
   pageType: PageType;
   url: string;
+  seriesUrl?: string;
+  seriesId?: string;
   detectedAudioLanguages: string[];
   detectedSubtitleLanguages: string[];
   detectedVariantType: VariantType;
@@ -77,6 +84,33 @@ export interface PageCounts {
   hidden: number;
   dimmed: number;
   preferred: number;
+}
+
+export interface FollowedSeries {
+  seriesId: string;
+  title: string;
+  slug?: string;
+  seriesUrl: string;
+  preferredAudio: string;
+  followedAt: number;
+  enabled: boolean;
+  newestEpisodeSeen?: number | null;
+  newestReleaseDateSeen?: string | null;
+  notes?: string;
+}
+
+export type EpisodeSeenStatus = 'seen' | 'unseen';
+
+export interface EpisodeSeenState {
+  seriesId: string;
+  statuses: Record<string, EpisodeSeenStatus>;
+  updatedAt: number;
+}
+
+export interface ReleaseSeenState {
+  seriesId: string;
+  seenReleaseKeys: string[];
+  updatedAt: number;
 }
 
 export interface LocalUserTag {
