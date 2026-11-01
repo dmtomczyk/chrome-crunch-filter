@@ -3,7 +3,7 @@ import type { PageType } from '../../shared/types';
 export function detectPageType(url: URL = new URL(location.href)): PageType {
   const path = url.pathname.toLowerCase();
 
-  if (path.includes('/simulcastcalendar')) {
+  if (/\/(?:releasecalendar|simulcastcalendar)\/?$/.test(path)) {
     return 'release-calendar';
   }
 

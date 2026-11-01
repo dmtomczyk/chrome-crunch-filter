@@ -4,3 +4,5 @@ dist/
 *.log
 screenshots/
 *.zip
+*.crx
+*.pem

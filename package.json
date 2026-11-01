@@ -5,12 +5,15 @@
   "description": "Chrome extension for showing only your chosen audio on Crunchyroll.",
   "type": "module",
   "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "typecheck": "tsc --noEmit",
     "build": "node ./scripts/build.mjs",
     "clean": "rm -rf dist"
   },
   "devDependencies": {
     "@types/chrome": "^0.1.40",
     "esbuild": "^0.25.3",
+    "jsdom": "^29.1.1",
     "typescript": "^5.8.3"
   }
 }

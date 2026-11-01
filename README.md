@@ -18,6 +18,7 @@ The current product direction is simple:
 
 ### Supported surfaces
 - **Release calendar**
+  - `https://www.crunchyroll.com/releasecalendar`
   - `https://www.crunchyroll.com/simulcastcalendar`
 - **Browse / listing pages**
   - alphabetical browse
@@ -72,6 +73,16 @@ npm run build
 
 This creates `dist/`.
 
+### Validate changes
+
+```bash
+npm test
+npm run typecheck
+npm run build
+```
+
+The calendar regression tests include 74 release cards reduced from a saved page, with scripts, images, and account UI removed.
+
 ### Load unpacked in Chrome / Brave
 1. Open `chrome://extensions`
 2. Enable **Developer mode**
@@ -86,6 +97,9 @@ Useful signals include:
 - visible language labels in titles and metadata
 - subtitle/audio text when present
 - Crunchyroll locale hints embedded in release-calendar metadata such as `JAJP`, `ENUS`, `PTBR`, `TEIN`, `TAIN`, `IDID`, etc.
+- The updated calendar's explicit `Audio languages` accessibility labels, including tracks hidden behind a `+N` indicator. Grouped releases remain visible when any listed audio matches your preference.
+
+The updated calendar lists base languages such as `ES` and `PT` without regions. These match either regional preference for that language.
 
 On the release calendar, the extension now behaves primarily like an **audio-language filter**, not a duplicate-collapser.
 
