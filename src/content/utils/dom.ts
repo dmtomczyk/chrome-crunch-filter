@@ -55,7 +55,9 @@ export function upsertAfter(target: Element | null, node: HTMLElement): void {
 }
 
 export function findFirstAnchor(root: HTMLElement, patterns: RegExp[]): HTMLAnchorElement | null {
-  const anchors = Array.from(root.querySelectorAll<HTMLAnchorElement>('a[href]'));
+  const anchors = root.matches('a[href]')
+    ? [root as HTMLAnchorElement, ...Array.from(root.querySelectorAll<HTMLAnchorElement>('a[href]'))]
+    : Array.from(root.querySelectorAll<HTMLAnchorElement>('a[href]'));
   return anchors.find((anchor) => patterns.some((pattern) => pattern.test(anchor.href))) ?? null;
 }
 

@@ -94,14 +94,14 @@ export function collectWatchlistRoots(root: ParentNode = document): HTMLElement[
 
 export function collectReleaseRoots(root: ParentNode = document): HTMLElement[] {
   const explicit = Array.from(
-    root.querySelectorAll<HTMLElement>('ul.releases > li, li.release, article.release, [data-popover-url][data-group-id]')
+    root.querySelectorAll<HTMLElement>('.erc-release-card, [class*="release-calendar-card--"], ul.releases > li, li.release, article.release, [data-popover-url][data-group-id]')
   );
   if (explicit.length > 0) {
     return keepInnermostElements(uniqElements(explicit.filter((element) => element.innerText.trim().length > 0)));
   }
 
-  const anchors = Array.from(root.querySelectorAll<HTMLAnchorElement>('main a[href*="/watch/"]')).concat(
-    Array.from(root.querySelectorAll<HTMLAnchorElement>('main a[href*="/series/"]'))
+  const anchors = Array.from(root.querySelectorAll<HTMLAnchorElement>('main a[href*="/watch/"], [role="main"] a[href*="/watch/"]')).concat(
+    Array.from(root.querySelectorAll<HTMLAnchorElement>('main a[href*="/series/"], [role="main"] a[href*="/series/"]'))
   );
 
   return keepInnermostElements(
@@ -110,7 +110,7 @@ export function collectReleaseRoots(root: ParentNode = document): HTMLElement[] 
         .map(
           (anchor) =>
             anchor.closest(
-              '[data-popover-url][data-group-id], li.release, article.release, li, article, [class*="release"], [class*="episode-card"], [class*="playable-card--"]'
+              '[data-popover-url][data-group-id], li.release, article.release, [data-t="series-card"], [data-t*="episode-card"], [class*="episode-card"], [class*="playable-card--"], [class*="horizontal-card--"], [class*="portrait-card--"], article, li'
             ) as HTMLElement | null
         )
         .filter((element): element is HTMLElement => Boolean(element && element.innerText.trim().length > 0))

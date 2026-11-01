@@ -6,6 +6,7 @@ import {
   detectLanguages,
   matchesPreferredLanguages,
   normalizeCrunchyrollLocaleHint,
+  detectCalendarAudioLanguages,
   normalizeTitle
 } from '../filters/language-normalizer';
 import { normalizeSeriesUrl } from '../../shared/followed-series';
@@ -29,6 +30,14 @@ function isReleaseCalendarNoiseLine(line: string): boolean {
 }
 
 function extractReleaseCalendarTitle(root: HTMLElement): string | null {
+  // Modern cards expose a series title separately from their time and episode metadata.
+  const title = root.querySelector<HTMLElement>(
+    '[data-t="series-page-link"], [data-t="series-title"], [class*="series-title"], [class*="secondary-title"], a[href*="/series/"][class*="title-link"]'
+  );
+  if (textOf(title)) {
+    return textOf(title);
+  }
+
   const lines = root.innerText
     .split(/\n+/)
     .map((line) => line.trim())
@@ -249,6 +258,21 @@ export function buildEntryRecord(root: HTMLElement, pageType: PageType, settings
 
   if (localeHint) {
     detection = applyExplicitAudioLanguageHint(detection, localeHint);
+  }
+
+  // A modern release can group multiple audio tracks. Its explicit list takes
+  // precedence over both title heuristics and the single locale in the watch URL.
+  const audioLabel = pageType === 'release-calendar'
+    ? root.querySelector('[aria-label^="Audio languages:"]')?.getAttribute('aria-label')
+    : null;
+  const calendarAudio = detectCalendarAudioLanguages(audioLabel);
+  if (calendarAudio.length > 0) {
+    detection = {
+      ...detection,
+      audioLanguages: calendarAudio,
+      variantType: calendarAudio.includes('ja-JP') ? (calendarAudio.length > 1 ? 'mixed' : 'sub') : 'dub',
+      confidence: 0.99
+    };
   }
 
   const entry: ContentEntry = {

@@ -123,6 +123,21 @@ export interface DetectionResult {
   confidence: number;
 }
 
+export function detectCalendarAudioLanguages(label: string | null | undefined): string[] {
+  if (!label?.startsWith('Audio languages:')) return [];
+
+  // The calendar exposes base languages, without regional distinctions.
+  const codes: Record<string, string[]> = {
+    JA: ['ja-JP'], EN: ['en-US'], DE: ['de-DE'], ES: ['es-LA', 'es-ES'],
+    FR: ['fr-FR'], PT: ['pt-BR', 'pt-PT'], IT: ['it-IT'], HI: ['hi-IN'],
+    TH: ['th-TH'], TA: ['ta-IN'], TE: ['te-IN'], AR: ['ar-ME'],
+    ZH: ['zh-CN', 'zh-TW'], KO: ['ko-KR'], RU: ['ru-RU'], ID: ['id-ID'],
+    PL: ['pl-PL'], TL: ['tl-PH']
+  };
+  return [...new Set(label.slice('Audio languages:'.length).split(',')
+    .flatMap(code => codes[code.trim().toUpperCase()] ?? []))];
+}
+
 export function labelForLanguage(code: string): string {
   return LANGUAGE_ALIASES.find((entry) => entry.code === code)?.label ?? code;
 }
